@@ -31,7 +31,7 @@ class Crawler:
             for handled_entry in handled_list:
                 self.handled.add(clean_url(handled_entry))
 
-    def crawl(self, url, depth, previous_url=None, follow=True):
+    def crawl(self, url, depth, previous_url=None, follow=True, link_text=None):
 
         url = clean_url(url)
 
@@ -47,6 +47,8 @@ class Crawler:
         if final_url in self.handled or final_url[-4:] in self.file_endings_exclude:
             return
 
+        # import pdb; pdb.set_trace()
+
         print(final_url)
 
         # Type of content on page at url
@@ -61,7 +63,7 @@ class Crawler:
 
         head_handler = self.head_handlers.get(content_type)
         if head_handler:
-            head_handler.handle(response, depth, previous_url, local_name)
+            head_handler.handle(response, depth, previous_url, local_name, link_text=link_text)
 
         if content_type == "text/html":
             if depth and follow:
@@ -69,7 +71,7 @@ class Crawler:
                 urls = self.get_urls(response)
                 self.handled.add(final_url)
                 for next_url in urls:
-                    self.crawl(next_url['url'], depth, previous_url=url, follow=next_url['follow'])
+                    self.crawl(next_url['url'], depth, previous_url=url, follow=next_url['follow'], link_text=next_url['text'])
         else:
             self.handled.add(final_url)
 

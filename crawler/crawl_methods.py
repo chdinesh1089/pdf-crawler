@@ -11,9 +11,11 @@ def get_hrefs_html(response, follow_foreign_hosts=False):
     output = []
     soup = BeautifulSoup(response.text, "lxml")
     parsed_response_url = urlparse(response.url)
-    urls_on_page = [link.attrs.get("href") for link in soup.find_all('a')]
+    a_tags = soup.find_all("a")
+    urls_on_page = [link.attrs.get("href") for link in a_tags]
+    urls_text = [link.text for link in a_tags]
 
-    for url in urls_on_page:
+    for idx, url in enumerate(urls_on_page):
 
         if url not in urls:
 
@@ -31,7 +33,7 @@ def get_hrefs_html(response, follow_foreign_hosts=False):
                 follow = False
 
             urls.add(url)
-            output.append({"url": url, "follow": follow})
+            output.append({"url": url, "follow": follow, "text": urls_text[idx]})
 
     return output
 

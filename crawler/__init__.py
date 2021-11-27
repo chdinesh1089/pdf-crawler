@@ -20,7 +20,7 @@ logging.basicConfig(
 requests_downloader = RequestsDownloader()
 
 
-def crawl(url, output_dir, depth=2, method="normal", gecko_path="geckodriver", page_name=None, custom_stats_handler=None, custom_process_handler=None):
+def crawl(url, output_dir, depth=2, method="normal", gecko_path="geckodriver", page_name=None, csv_file_name=None, custom_stats_handler=None, custom_process_handler=None):
     head_handlers = {}
     get_handlers = {}
 
@@ -28,11 +28,14 @@ def crawl(url, output_dir, depth=2, method="normal", gecko_path="geckodriver", p
     if page_name is None:
         page_name = urlparse(url).netloc
 
-    get_handlers['application/pdf'] = LocalStoragePDFHandler(
-        directory=output_dir, subdirectory=page_name)
+    # get_handlers['application/pdf'] = LocalStoragePDFHandler(
+    #     directory=output_dir, subdirectory=page_name)
+
+    if csv_file_name is None:
+        csv_file_name = page_name
 
     if custom_stats_handler is None:
-        head_handlers['application/pdf'] = CSVStatsPDFHandler(directory=output_dir, name=page_name)
+        head_handlers['application/pdf'] = CSVStatsPDFHandler(directory=output_dir, name=csv_file_name)
     else:
         for content_type, Handler in custom_stats_handler.items():
             head_handlers[content_type] = Handler
@@ -42,8 +45,8 @@ def crawl(url, output_dir, depth=2, method="normal", gecko_path="geckodriver", p
     else:
         process_handler = custom_process_handler
 
-    if not get_handlers and not head_handlers:
-        raise ValueError('You did not specify any output')
+    # if not get_handlers and not head_handlers:
+    #     raise ValueError('You did not specify any output')
 
     crawler = Crawler(
         downloader=requests_downloader,

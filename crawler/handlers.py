@@ -25,7 +25,7 @@ class LocalStoragePDFHandler:
 
 
 class CSVStatsPDFHandler:
-    _FIELDNAMES = ['filename', 'local_name', 'url', 'linking_page_url', 'size', 'depth']
+    _FIELDNAMES = ['filename', 'local_name', 'url', 'linking_page_url', 'size', 'depth', 'link_text']
 
     def __init__(self, directory, name):
         self.directory = directory
@@ -62,6 +62,7 @@ class CSVStatsPDFHandler:
                 'linking_page_url': previous_url or '',
                 'size': response.headers.get('Content-Length') or '',
                 'depth': depth,
+                'link_text': kwargs.get('link_text') or '',
             }
             writer.writerow(row)
 

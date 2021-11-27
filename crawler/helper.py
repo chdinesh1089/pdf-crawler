@@ -64,6 +64,7 @@ def call(session, url, use_proxy=False, retries=0):
             response.raise_for_status()
         except Exception as e:
             # try with proxy
-            return call(session,url,use_proxy=True)
+            print(e, url)
+            # return call(session,url,use_proxy=True)
         else:
             return response
